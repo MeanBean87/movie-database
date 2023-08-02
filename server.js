@@ -44,6 +44,14 @@ app.post("/api/reviews", (req, res) => {
         res.json(data);
      }
     );
+});
+ 
+app.put("/api/movies/:id", (req, res) => {
+    connection.query("UPDATE movies SET movie_name = ? WHERE id = ?", [req.body.movie_name, req.params.id], (err, data) => {
+        if (err) throw err;
+        res.json(data);
+     }
+    );
  });
 
 app.delete("/api/movies/:id", (req, res) => {
