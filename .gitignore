@@ -1,0 +1,4 @@
+.DS_Stores
+.vscode
+node_modules
+TASK.md
