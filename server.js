@@ -22,7 +22,7 @@ app.get("/api/movies", (req, res) => {
     );  
 });
 
-app.get("/api/reviews", (req, res) => {
+app.get("/api/movie-reviews", (req, res) => {
     connection.query("SELECT * FROM reviews", (err, data) => {
         if (err) throw err;
         res.json(data);
@@ -30,7 +30,7 @@ app.get("/api/reviews", (req, res) => {
     );
 });
  
-app.post("/api/movies", (req, res) => {
+app.post("/api/add-movie", (req, res) => {
     connection.query("INSERT INTO movies (movie_name) VALUES (?)", [req.body.movie_name], (err, data) => {
         if (err) throw err;
         res.json(data);
