@@ -1,27 +1,59 @@
-const express = require('express');
-const mysql = require('mysql2');
-const { dbConfigCRUD } = require("./dbConfig/dbConfig.js");
+const express = require("express");
+const mysql = require("mysql2");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-const pool = mysql
-    .createConnection(dbConfigCRUD, { multipleStatements: true })
-    .promise();
-    const getMovies = async (pool) => {
-        await pool.query("SELECT * FROM movies")
-        
-    }
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "password",
+    database: "movie_db",
+});
 
-    app.get('/api/movies',  (req, res) => {
-       const allMovie = getMovies();
-       res.send(allMovie);
-    });
 
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-      });
-      
+app.get("/api/movies", (req, res) => {
+    connection.query("SELECT * FROM movies", (err, data) => {
+        if (err) throw err;
+        res.json(data);
+     }
+    );  
+});
+
+app.get("/api/reviews", (req, res) => {
+    connection.query("SELECT * FROM reviews", (err, data) => {
+        if (err) throw err;
+        res.json(data);
+     }
+    );
+});
+ 
+app.post("/api/movies", (req, res) => {
+    connection.query("INSERT INTO movies (movie_name) VALUES (?)", [req.body.movie_name], (err, data) => {
+        if (err) throw err;
+        res.json(data);
+     }
+    );
+});
+ 
+app.post("/api/reviews", (req, res) => {
+    connection.query("INSERT INTO reviews (movie_id, review) VALUES (?, ?)", [req.body.movie_id, req.body.review], (err, data) => {
+        if (err) throw err;
+        res.json(data);
+     }
+    );
+ });
+
+app.delete("/api/movies/:id", (req, res) => {
+    connection.query("DELETE FROM movies WHERE id = ?", [req.params.id], (err, data) => {
+        if (err) throw err;
+        res.json(data);
+     }
+    );
+ });
+ 
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
